@@ -11,15 +11,19 @@ defmodule ZfsMonitor.MixProject do
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
     [
       extra_applications: [:logger],
-      mod: {ZfsMonitor.Application, []}
+      mod: {ZFSMonitor.Application, []}
     ]
   end
 
-  # Run "mix help deps" to learn about dependencies.
+  defp aliases do
+    [
+      "protobuf.generate": ["cmd protoc --elixir_out=plugins=grpc:./lib --proto_path=priv/protos priv/protos/*.proto"]
+    ]
+  end
+
   defp deps do
     [
       {:grpc, "~> 0.7"},

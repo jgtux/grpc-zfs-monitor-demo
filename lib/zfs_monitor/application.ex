@@ -1,20 +1,18 @@
-defmodule ZfsMonitor.Application do
-  # See https://hexdocs.pm/elixir/Application.html
-  # for more information on OTP Applications
-  @moduledoc false
-
+defmodule ZFSMonitor.Application do
   use Application
 
-  @impl true
   def start(_type, _args) do
     children = [
-      # Starts a worker by calling: ZfsMonitor.Worker.start_link(arg)
-      # {ZfsMonitor.Worker, arg}
+      ZFSMonitor.Cache,
+      {GRPC.Server.Supervisor,
+       servers: [ZFSMonitor.GRPC.Server],
+       port: 50051,
+       start_server: true
+      }
     ]
 
-    # See https://hexdocs.pm/elixir/Supervisor.html
-    # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: ZfsMonitor.Supervisor]
+
+    opts = [strategy: :one_for_one, name: ZFSMonitor.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end

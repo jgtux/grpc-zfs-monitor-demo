@@ -14,13 +14,13 @@ defmodule ZFSMonitor.Cache do
   def init(opts) do
     interval = Keyword.get(opts, :interval, 5_000)
     send(self(), :collect)
-    
+
     state = %{
       stats: nil,
       interval: interval,
       collection_count: 0
     }
-    
+
     Logger.info("Stats cache started with #{interval}ms interval")
     {:ok, state}
   end
@@ -36,9 +36,9 @@ defmodule ZFSMonitor.Cache do
       {:ok, stats} ->
         Logger.debug("Stats collected (##{state.collection_count + 1})")
         Process.send_after(self(), :collect, state.interval)
-        
+
         {:noreply, %{state | stats: stats, collection_count: state.collection_count + 1}}
-      
+ 
       {:error, reason} ->
         Logger.error("Collection failed: #{inspect(reason)}")
         Process.send_after(self(), :collect, state.interval)
